@@ -1,0 +1,270 @@
+{{ define "main" }}
+<div class="container">
+    <h1>🔥 FIRE Financial Calculator</h1>
+    
+    <div class="intro-section">
+        <div class="intro-card">
+            <h2>What is this?</h2>
+            <p>A <strong>Financial Independence, Retire Early (FIRE)</strong> calculator that helps you project your wealth over time. Compare up to 3 different scenarios side-by-side to see how changes in savings, returns, or expenses affect your retirement corpus.</p>
+        </div>
+        <div class="intro-card">
+            <h2>How it calculates</h2>
+            <ul>
+                <li><strong>SIP Phase:</strong> Yearly investments added to capital with step-up increase</li>
+                <li><strong>SWP Phase:</strong> Yearly withdrawals from corpus (runs parallel, not after SIP)</li>
+                <li><strong>Returns:</strong> Applied on remaining capital at year-end</li>
+                <li><strong>Emergencies:</strong> One-time expenses adjusted for inflation at withdrawal year</li>
+                <li><strong>Home Loan:</strong> EMI deducted yearly during loan tenure</li>
+            </ul>
+        </div>
+        <div class="intro-card highlight">
+            <h2>💡 Important Note</h2>
+            <p>All projected values shown are <strong>inflation-adjusted (real values)</strong>. This means ₹10 Cr shown for Year 30 has the same purchasing power as ₹10 Cr today. The nominal (actual) value would be much higher.</p>
+            <p class="formula">Real Capital = Nominal Capital ÷ (1 + Inflation)^Years</p>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="scenario-card s1">
+            <h3>📌 Scenario 1</h3>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name1" value="Base Case" onchange="calculate()">
+            </div>
+            <div class="section-label">Capital & Returns</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Initial Capital (₹)</label>
+                    <input type="number" id="capital1" value="5000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Returns (%)</label>
+                    <input type="number" id="returns1" value="13.5" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Inflation (%)</label>
+                    <input type="number" id="inflation1" value="9" step="0.5" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Projection Years</label>
+                    <input type="number" id="numYears1" value="30" min="5" max="50" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">SIP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SIP (₹)</label>
+                    <input type="number" id="sip1" value="5000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SIP Step-up (%)</label>
+                    <input type="number" id="sipStep1" value="9" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SIP Duration (years)</label>
+                <input type="number" id="sipDur1" value="12" min="0" max="40" onchange="calculate()">
+            </div>
+            <div class="section-label">SWP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SWP (₹)</label>
+                    <input type="number" id="swp1" value="1500000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SWP Step-up (%)</label>
+                    <input type="number" id="swpStep1" value="9" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Home Loan</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly EMI (₹)</label>
+                    <input type="number" id="homeLoanEmi1" value="1200000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Loan Tenure (years)</label>
+                    <input type="number" id="homeLoanTenure1" value="5" min="0" max="30" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Emergency Expenses</div>
+            <div class="emergency-section">
+                <div class="emergency-list" id="emergencyList1"></div>
+                <div class="emergency-inputs">
+                    <input type="number" id="emergencyYear1" placeholder="Year" min="1" max="50">
+                    <input type="number" id="emergencyAmount1" placeholder="Amount (₹)" step="100000">
+                    <button class="add-emergency-btn" onclick="addEmergency(1)">+ Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card s2">
+            <h3>📌 Scenario 2</h3>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name2" value="Aggressive" onchange="calculate()">
+            </div>
+            <div class="section-label">Capital & Returns</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Initial Capital (₹)</label>
+                    <input type="number" id="capital2" value="5000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Returns (%)</label>
+                    <input type="number" id="returns2" value="15" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Inflation (%)</label>
+                    <input type="number" id="inflation2" value="9" step="0.5" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Projection Years</label>
+                    <input type="number" id="numYears2" value="30" min="5" max="50" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">SIP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SIP (₹)</label>
+                    <input type="number" id="sip2" value="6000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SIP Step-up (%)</label>
+                    <input type="number" id="sipStep2" value="10" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SIP Duration (years)</label>
+                <input type="number" id="sipDur2" value="12" min="0" max="40" onchange="calculate()">
+            </div>
+            <div class="section-label">SWP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SWP (₹)</label>
+                    <input type="number" id="swp2" value="1500000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SWP Step-up (%)</label>
+                    <input type="number" id="swpStep2" value="9" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Home Loan</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly EMI (₹)</label>
+                    <input type="number" id="homeLoanEmi2" value="1200000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Loan Tenure (years)</label>
+                    <input type="number" id="homeLoanTenure2" value="5" min="0" max="30" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Emergency Expenses</div>
+            <div class="emergency-section">
+                <div class="emergency-list" id="emergencyList2"></div>
+                <div class="emergency-inputs">
+                    <input type="number" id="emergencyYear2" placeholder="Year" min="1" max="50">
+                    <input type="number" id="emergencyAmount2" placeholder="Amount (₹)" step="100000">
+                    <button class="add-emergency-btn" onclick="addEmergency(2)">+ Add</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="scenario-card s3">
+            <h3>📌 Scenario 3</h3>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name3" value="Conservative" onchange="calculate()">
+            </div>
+            <div class="section-label">Capital & Returns</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Initial Capital (₹)</label>
+                    <input type="number" id="capital3" value="5000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Returns (%)</label>
+                    <input type="number" id="returns3" value="11" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Inflation (%)</label>
+                    <input type="number" id="inflation3" value="9" step="0.5" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Projection Years</label>
+                    <input type="number" id="numYears3" value="30" min="5" max="50" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">SIP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SIP (₹)</label>
+                    <input type="number" id="sip3" value="4000000" step="500000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SIP Step-up (%)</label>
+                    <input type="number" id="sipStep3" value="8" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>SIP Duration (years)</label>
+                <input type="number" id="sipDur3" value="12" min="0" max="40" onchange="calculate()">
+            </div>
+            <div class="section-label">SWP</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly SWP (₹)</label>
+                    <input type="number" id="swp3" value="1200000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>SWP Step-up (%)</label>
+                    <input type="number" id="swpStep3" value="9" step="0.5" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Home Loan</div>
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Yearly EMI (₹)</label>
+                    <input type="number" id="homeLoanEmi3" value="1200000" step="100000" onchange="calculate()">
+                </div>
+                <div class="form-group">
+                    <label>Loan Tenure (years)</label>
+                    <input type="number" id="homeLoanTenure3" value="5" min="0" max="30" onchange="calculate()">
+                </div>
+            </div>
+            <div class="section-label">Emergency Expenses</div>
+            <div class="emergency-section">
+                <div class="emergency-list" id="emergencyList3"></div>
+                <div class="emergency-inputs">
+                    <input type="number" id="emergencyYear3" placeholder="Year" min="1" max="50">
+                    <input type="number" id="emergencyAmount3" placeholder="Amount (₹)" step="100000">
+                    <button class="add-emergency-btn" onclick="addEmergency(3)">+ Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="results">
+        <div class="chart-container">
+            <h3 style="margin-bottom: 15px; color: #4ecdc4;">📈 Real Capital Over Time (₹ Crores)</h3>
+            <canvas id="chart"></canvas>
+            <div id="chartTooltip" class="chart-tooltip"></div>
+        </div>
+        <div class="table-container">
+            <h3 style="margin-bottom: 15px; color: #4ecdc4;">📊 Year-by-Year Comparison</h3>
+            <table id="resultsTable"></table>
+        </div>
+    </div>
+</div>
+
+<script src="/js/calculator.js"></script>
+{{ end }}

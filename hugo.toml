@@ -1,0 +1,10 @@
+baseURL = "https://fire-calculator.example.com/"
+languageCode = "en-us"
+title = "🔥 FIRE Calculator"
+
+[params]
+  description = "Financial Independence Retire Early - Scenario Comparison Calculator"
+  author = "FIRE Calculator"
+
+[build]
+  writeStats = true
